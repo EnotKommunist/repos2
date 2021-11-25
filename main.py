@@ -1,16 +1,45 @@
-# This is a sample Python script.
+import sys
+from random import randint
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtGui import QPainter, QColor
+from PyQt5 import uic
+
+from ui import Ui_MainWindow
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+SCREEN_SIZE = (600, 650)
 
 
-# Press the green button in the gutter to run the script.
+class Example(QtWidgets.QMainWindow, Ui_MainWindow):
+    def __init__(self):
+        super().__init__()
+        self.setupUi(self)
+        self.resize(*SCREEN_SIZE)
+        self.initUi()
+
+    def initUi(self):
+        self.flag = False
+        self.pushButton.clicked.connect(self.draw)
+
+    def draw(self):
+        self.flag = True
+        self.update()
+
+    def paintEvent(self, event):
+        if self.flag:
+            qp = QPainter()
+            qp.begin(self)
+            qp.setBrush(QColor(randint(0, 255), randint(0, 255), randint(0, 255)))
+            x, y = randint(0, SCREEN_SIZE[0]), randint(0, SCREEN_SIZE[1])
+            w = h = randint(10, 70)
+            qp.drawEllipse(x, y, w, h)
+            qp.end()
+            self.flag = False
+
+
 if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    app = QtWidgets.QApplication(sys.argv)
+    ex = Example()
+    ex.show()
+    sys.exit(app.exec())
